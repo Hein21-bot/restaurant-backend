@@ -28,6 +28,11 @@ const storage = multer.diskStorage({
   }
 });
 
+
+
+const upload = multer({
+  storage: storage
+}).single("employeeImage");
 function dbcon() {
   return mysql.createConnection({
     host: "localhost",
@@ -37,10 +42,6 @@ function dbcon() {
     multipleStatements: "true"
   });
 }
-
-const upload = multer({
-  storage: storage
-}).single("employeeImage");
 app.use(express.static(path.join(__dirname, "public")));
 app.use(helmet());
 app.use(bodyParser.json());
@@ -60,58 +61,58 @@ app.use((req, res, next) => {
 });
 app.use("/api", appRouter);
 
-app.post("/api/user/role/addRole", (req, res) => {
-  const InsertRoleName = req.body.roleName;
-  const InsertRemark = req.body.remark;
-  const InsertActive = req.body.active;
-  const InsertDate = req.body.createdDate;
-  console.log(req.body);
+// app.post("/api/user/role/addRole", (req, res) => {
+//   const InsertRoleName = req.body.roleName;
+//   const InsertRemark = req.body.remark;
+//   const InsertActive = req.body.active;
+//   const InsertDate = req.body.createdDate;
+//   console.log(req.body);
 
-  const checkDuplicate = `Select Count(*) as DR from tbl_role where roleName=trim('${InsertRoleName}')`;
-  const insertRole = `INSERT INTO tbl_role (roleName, active, remark,createBy, createdDate) VALUES (trim("${InsertRoleName}"), ${
-    InsertActive ? 1 : 0
-  }, trim("${InsertRemark}"), 1, '${InsertDate}')`;
-  dbcon().connect(err => {
-    if (err) {
-      res.json(
-        response({
-          success: false,
-          payload: null,
-          error: err,
-          message: "Database Connection Fail!"
-        })
-      );
-    }
-    dbcon().query(checkDuplicate, (err, result) => {
-      const DuplicateRows = result[0].DR;
-      if (DuplicateRows > 0) {
-        res.json(
-          response({
-            success: false,
-            payload: null,
-            message: "Role Name Already Exist"
-          })
-        );
-        return;
-      } else {
-        dbcon().query(insertRole, (err, result, fields) => {
-          if (err) {
-            res.json(
-              response({
-                success: false,
-                payload: null,
-                message: "Database Connection Fail!"
-              })
-            );
-          }
+//   const checkDuplicate = `Select Count(*) as DR from tbl_role where roleName=trim('${InsertRoleName}')`;
+//   const insertRole = `INSERT INTO tbl_role (roleName, active, remark,createBy, createdDate) VALUES (trim("${InsertRoleName}"), ${
+//     InsertActive ? 1 : 0
+//   }, trim("${InsertRemark}"), 1, '${InsertDate}')`;
+//   dbcon().connect(err => {
+//     if (err) {
+//       res.json(
+//         response({
+//           success: false,
+//           payload: null,
+//           error: err,
+//           message: "Database Connection Fail!"
+//         })
+//       );
+//     }
+//     dbcon().query(checkDuplicate, (err, result) => {
+//       const DuplicateRows = result[0].DR;
+//       if (DuplicateRows > 0) {
+//         res.json(
+//           response({
+//             success: false,
+//             payload: null,
+//             message: "Role Name Already Exist"
+//           })
+//         );
+//         return;
+//       } else {
+//         dbcon().query(insertRole, (err, result, fields) => {
+//           if (err) {
+//             res.json(
+//               response({
+//                 success: false,
+//                 payload: null,
+//                 message: "Database Connection Fail!"
+//               })
+//             );
+//           }
 
-          const data = result;
-          res.json(response({ success: true, payload: data }));
-        });
-      }
-    });
-  });
-});
+//           const data = result;
+//           res.json(response({ success: true, payload: data }));
+//         });
+//       }
+//     });
+//   });
+// });
 
 app.put("/api/user/role/updateRole", (req, res) => {
   const UpdateRoleName = req.body.roleName;
@@ -164,7 +165,7 @@ app.put("/api/user/role/updateRole", (req, res) => {
     });
   });
 });
-
+///////
 app.get("/api/user/department", (req, res) => {
   const selectDepartment =
     "select user.userId,department.departmentId,department.department,department.active,department.remark,department.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_department as department ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId ORDER BY department.department";
@@ -240,7 +241,6 @@ app.post("/api/user/department/addDepartment", (req, res) => {
               })
             );
           }
-
           const data = result;
           res.json(response({ success: true, payload: data }));
         });
@@ -492,7 +492,8 @@ app.post("/api/user/employee/addEmployee", (req, res) => {
 
     console.log(req.body);
 
-    const checkDuplicate = `Select Count(*) as DR from tbl_employee where employeeName=trim('${InsertEmployeeName}');Select Count(*) as DRNRC from tbl_employee where nrcNo=trim('${InsertNRC}')`;
+    const checkDuplicate = `Select Count(*) as DR from tbl_employee where employeeName=trim('${InsertEmployeeName}');Select Count(*) as DRNRC fro
+    m tbl_employee where nrcNo=trim('${InsertNRC}')`;
 
     const insertEmployee = `INSERT INTO restaurant.tbl_employee (employeeImage, employeeName, fatherName, dateOfBirth, nrcNo, joinDate, departmentId, designationId, education, gender, maritalStatus, address, createdBy, createdDate, active) VALUES ('${InsertEmployeeImage}', '${InsertEmployeeName}', '${InsertFatherName}', '${InsertDateOfBirth}', '${InsertNRC}', '${InsertJoinDate}', ${InsertDepartmentId}, ${InsertDesignationId},'${InsertEducation}', '${InsertGender}', '${InsertMaritalStatus}', '${InsertAddrerss}', '${InsertCreatedBy}', '${InsertCreatedDate}', ${InsertActive})`;
     dbcon().connect(err => {

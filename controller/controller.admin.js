@@ -5,14 +5,9 @@ const selectRole = (req, res) => {
   adminService.selectRole().then(data => {
     if (data.length === 0) {
       res.json(
-        response({
-          success: false,
-          payload: null,
-          message: "Database Connection Fail!"
-        })
+        response({ success: false, payload: null, message: "Database Connection Fail!" })
       );
     }
-
     res.json(response({ success: true, payload: data }));
   });
 };
@@ -24,7 +19,11 @@ const insertRole = (req, res) => {
   const active = req.body.active;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
-
+adminService
+.checkDuplicateRole(roleName)
+.then(data=>{
+  console.log("DuPlicate=======>>",data);  
+})
   adminService
     .insertRole(roleName, remark, active, userId, createdDate)
     .then(data => {
@@ -32,10 +31,7 @@ const insertRole = (req, res) => {
 
       if (data.length === 0) {
         res.json(
-          response({
-            success: false,
-            message: "Role Insertion Failed!"
-          })
+          response({ success: false, message: "Role Insertion Failed!" })
         );
       }
 
@@ -50,19 +46,15 @@ const editRole = (req, res) => {
   const remark = req.body.remark;
   const active = req.body.active;
   const userId = req.body.userId;
-  
 
   adminService
-    .editRole(roleId,roleName, remark, active, userId)
+    .editRole(roleId, roleName, remark, active, userId)
     .then(data => {
       console.log(data);
 
       if (data.length === 0) {
         res.json(
-          response({
-            success: false,
-            message: "Role Edition Failed!"
-          })
+          response({ success: false, message: "Role Edition Failed!" })
         );
       }
 
@@ -70,4 +62,4 @@ const editRole = (req, res) => {
     });
 };
 
-module.exports = { selectRole, insertRole,editRole };
+module.exports = { selectRole, insertRole, editRole };
