@@ -7,8 +7,7 @@ const router=express.Router()
 const {navController}=require('../controller')
 
 // router.use(authMiddleware)
-router.get('/role',adminController.selectRole)
-router.get('/department',departmentController.selectDepartment)
+router.get('/selectRole',adminController.selectRole)
 router.get('/nav',navController.navBarInfo)
 
 router.post('/insertRole',adminController.insertRole)

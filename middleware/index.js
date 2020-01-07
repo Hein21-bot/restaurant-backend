@@ -1,4 +1,4 @@
 const upload = require("./middleware.upload");
-const authMiddleware=require("./middleware.authorization")
+const routeMiddleware=require("./middleware.authorization")
 
-module.exports =  {upload,authMiddleware} ;
+module.exports =  {upload,routeMiddleware} ;

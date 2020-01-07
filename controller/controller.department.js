@@ -2,19 +2,24 @@ const response = require("../model/response");
 const { departmentService } = require("../service");
 
 const selectDepartment = (req, res) => {
-  departmentService.selectDepartment().then(data => {
-    if (data.length === 0) {
-      res.json(
-        response({
-          success: false,
-          payload: null,
-          message: "Database Connection Fail!"
-        })
-      );
-    }
+  departmentService
+    .selectDepartment()
+    .then(data => {
+      if (data.length === 0) {
+        res.json(
+          response({
+            success: false,
+            payload: null,
+            message: "Database Connection Fail!"
+          })
+        );
+      }
 
-    res.json(response({ success: true, payload: data }));
-  });
+      res.json(response({ success: true, payload: data }));
+    })
+    .catch(err => {
+      res.json(response({ success: false, message: err }));
+    });
 };
 
 const insertDepartment = (req, res) => {
@@ -24,19 +29,41 @@ const insertDepartment = (req, res) => {
   const active = req.body.active;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
-
   departmentService
-    .insertDepartment(department, active, remark, userId, createdDate)
+    .checkDuplicateDepartment(department)
     .then(data => {
-      console.log(data);
-
-      if (data.length === 0) {
+      const DuplicateRows = data[0].DR;
+      if (DuplicateRows > 0) {
         res.json(
-          response({ success: false, message: "Department Insertion Failed!" })
+          response({
+            success: false,
+            payload: null,
+            message: "Department Already Exist"
+          })
         );
-      }
+      } else {
+        departmentService
+          .insertDepartment(department, active, remark, userId, createdDate)
+          .then(data => {
+            console.log(data);
 
-      res.json(response({ success: true, message: "Department Inserted!" }));
+            if (data.length === 0) {
+              res.json(
+                response({
+                  success: false,
+                  message: "Department Insertion Failed!"
+                })
+              );
+            }
+
+            res.json(
+              response({ success: true, message: "Department Inserted!" })
+            );
+          });
+      }
+    })
+    .catch(err => {
+      res.json(response({ success: false, message: err }));
     });
 };
 
@@ -47,15 +74,41 @@ const editDepartment = (req, res) => {
   const active = req.body.active;
   const userId = req.body.userId;
   const departmentId = req.body.departmentId;
+  departmentService
+    .checkDuplicateDepartment(department, departmentId)
+    .then(data => {
+      const DuplicateRows = data[0].DR;
+      if (DuplicateRows > 0) {
+        res.json(
+          response({
+            success: false,
+            payload: null,
+            message: "Department Already Exist"
+          })
+        );
+      } else {
+        departmentService
+          .editDepartment(department, active, remark, userId, departmentId)
+          .then(data => {
+            console.log(data);
 
-  departmentService.editDepartment(department, active, remark, userId, departmentId).then(data => {
-    console.log(data);
+            if (data.length === 0) {
+              res.json(
+                response({
+                  success: false,
+                  message: "Department Edition Failed!"
+                })
+              );
+            }
 
-    if (data.length === 0) {
-      res.json(response({ success: false, message: "Department Edition Failed!" }));
-    }
-
-    res.json(response({ success: true, message: "Department Edited!" }));
-  });
+            res.json(
+              response({ success: true, message: "Department Edited!" })
+            );
+          });
+      }
+    })
+    .catch(err => {
+      res.json(response({ success: false, message: err }));
+    });
 };
 module.exports = { selectDepartment, insertDepartment, editDepartment };

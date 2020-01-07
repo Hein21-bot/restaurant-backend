@@ -12,4 +12,7 @@ const editEmployee = (employeeId,employeeName,employeeImage,fatherName,dateOfBir
     return restaurantDB.editEmployee(employeeId,employeeName,employeeImage,fatherName,dateOfBirth,nrc,joinDate,departmentId,designationId,education,gender,maritalStatus,address,userId, createdDate, active)
 }
 
-module.exports={selectEmployee,insertEmployee,editEmployee}
+const checkDuplicateEmployee=(employee, nrc,employeeId)=>{
+    return restaurantDB.checkDuplicateEmployee(employee, nrc, employeeId)
+}
+module.exports={selectEmployee,insertEmployee,editEmployee,checkDuplicateEmployee}

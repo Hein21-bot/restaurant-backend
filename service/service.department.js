@@ -12,4 +12,8 @@ const editDepartment = (department, active, remark, userId, departmentId) => {
     return restaurantDB.editDepartment(department, active, remark, userId, departmentId)
 }
 
-module.exports={selectDepartment,insertDepartment,editDepartment}
+const checkDuplicateDepartment=(department, departmentId)=>{
+    return restaurantDB.checkDuplicateDepartment(department, departmentId)
+}
+
+module.exports={selectDepartment,insertDepartment,editDepartment,checkDuplicateDepartment}

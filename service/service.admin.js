@@ -16,8 +16,8 @@ const editRole = (roleId, roleName, remark, active, userId) => {
     return restaurantDB.editRole(roleId, roleName, remark, active, userId)
 }
 
-const checkDuplicateRole=(roleName)=>{
-    return restaurantDB.checkDuplicateRole(roleName)
+const checkDuplicateRole=(roleName,roleId)=>{
+    return restaurantDB.checkDuplicateRole(roleName,roleId)
 }
-// userId, departmentId, department, active,remark, createdDate,employeeName
+
 module.exports = { navInfo, selectRole, insertRole, editRole,checkDuplicateRole }

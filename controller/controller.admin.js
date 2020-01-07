@@ -2,14 +2,26 @@ const response = require("../model/response");
 const { adminService } = require("../service");
 
 const selectRole = (req, res) => {
-  adminService.selectRole().then(data => {
-    if (data.length === 0) {
-      res.json(
-        response({ success: false, payload: null, message: "Database Connection Fail!" })
-      );
-    }
-    res.json(response({ success: true, payload: data }));
-  });
+  adminService
+    .selectRole()
+    .then(data => {
+      console.log(data);
+
+      if (data.length === 0) {
+        res.json(
+          response({
+            success: false,
+            payload: null,
+            message: "Database Connection Fail!"
+          })
+        );
+      } else {
+        res.json(response({ success: true, payload: data }));
+      }
+    })
+    .catch(err => {
+      res.json(response({ success: false, message: err }));
+    });
 };
 
 const insertRole = (req, res) => {
@@ -19,23 +31,37 @@ const insertRole = (req, res) => {
   const active = req.body.active;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
-adminService
-.checkDuplicateRole(roleName)
-.then(data=>{
-  console.log("DuPlicate=======>>",data);  
-})
   adminService
-    .insertRole(roleName, remark, active, userId, createdDate)
+    .checkDuplicateRole(roleName)
     .then(data => {
-      console.log(data);
-
-      if (data.length === 0) {
+      console.log("DuPlicate=======>>", data);
+      const DuplicateRows = data[0].DR;
+      if (DuplicateRows > 0) {
         res.json(
-          response({ success: false, message: "Role Insertion Failed!" })
+          response({
+            success: false,
+            payload: null,
+            message: "Role Name Already Exist"
+          })
         );
-      }
+      } else {
+        adminService
+          .insertRole(roleName, remark, active, userId, createdDate)
+          .then(data => {
+            console.log(data);
 
-      res.json(response({ success: true, message: "Role Inserted!" }));
+            if (data.length === 0) {
+              res.json(
+                response({ success: false, message: "Role Insertion Failed!" })
+              );
+            }
+
+            res.json(response({ success: true, message: "Role Inserted!" }));
+          });
+      }
+    })
+    .catch(err => {
+      res.json(response({ success: false, message: err }));
     });
 };
 
@@ -46,19 +72,36 @@ const editRole = (req, res) => {
   const remark = req.body.remark;
   const active = req.body.active;
   const userId = req.body.userId;
-
   adminService
-    .editRole(roleId, roleName, remark, active, userId)
+    .checkDuplicateRole(roleName, roleId)
     .then(data => {
-      console.log(data);
-
-      if (data.length === 0) {
+      const DuplicateRows = data[0].DR;
+      if (DuplicateRows > 0) {
         res.json(
-          response({ success: false, message: "Role Edition Failed!" })
+          response({
+            success: false,
+            payload: null,
+            message: "Role Name Already Exist"
+          })
         );
-      }
+      } else {
+        adminService
+          .editRole(roleId, roleName, remark, active, userId)
+          .then(data => {
+            console.log(data);
 
-      res.json(response({ success: true, message: "Role Edited!" }));
+            if (data.length === 0) {
+              res.json(
+                response({ success: false, message: "Role Edition Failed!" })
+              );
+            }
+
+            res.json(response({ success: true, message: "Role Edited!" }));
+          });
+      }
+    })
+    .catch(err => {
+      res.json(response({ success: false, message: err }));
     });
 };
 

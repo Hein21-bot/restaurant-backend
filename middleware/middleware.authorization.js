@@ -1,29 +1,55 @@
-const { verifyToken} = require("../security/token")
-const response = require("../model/response")
+const { verifyTokenSync } = require("../security/token");
+const response = require("../model/response");
+const fs = require("fs");
+const privateKey = fs.readFileSync("./security/private.key");
 
+const jwt = require("jsonwebtoken");
 
-const authMiddleware = (req,res,next) =>{
-    const authorization = req.headers['authorization']
-    const authFail = response({success:false,message:"Not authorized user"})
-    const authSuccess=response({success:false,message:error.message})
-    if(!authorization){
-        return res.json(authFail)
-    }
-   else if(!authorization.split(" ")[1]){
-    return res.json(authFail) 
-   }
-  
-   else {
-      return verifyToken(`${authorization.split(" ")[1]}`, (error, data) => {
-          if(error) {
-              return res.json(authSuccess)
-          }
-          else {
-               console.log(" data1234 ", data)
-              next()
-          }
+const routeMiddleware = (req, res, next) => {
+    console.log("Hello")
+  const allowedRoutes = ["/auth/login"];
+  if (allowedRoutes.findIndex(r => r === req.url) >= 0) return next();
+
+  if (!req.headers["authorization"]) {
+    return res.json(
+      response({
+        success: false,
+        message: "Token is required!"
       })
+    );
   }
-}
+  const token = verifyTokenSync(req.headers["authorization"]);
+  if (token === null) {
+    return res.json(
+      response({
+        success: false,
+        message: "Token is not in valid format!"
+      })
+    );
+  }
 
-module.exports = authMiddleware
+  return jwt.verify(token, privateKey, (err, payload) => {
+    if (err) {
+      return res.json(
+        response({
+          success: false,
+          message: "Token error!",
+          error: err
+        })
+      );
+    } else {
+      if (payload) {
+        return next();
+      } else {
+        return res.json(
+          response({
+            success: false,
+            message: "No user with your information!"
+          })
+        );
+      }
+    }
+  });
+};
+
+module.exports.routeMiddleware = routeMiddleware

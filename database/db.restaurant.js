@@ -16,8 +16,8 @@ const login = (username, password) => {
 
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    // `SELECT * FROM tbl_user WHERE password = '${password}' AND userName='${username}' `
-    `CALL getUser('${username}','${password}')`
+    `SELECT * FROM tbl_user WHERE password = '${password}' AND userName='${username}' `
+    // `CALL getUser('${username}','${password}')`
   );
 };
 
@@ -34,13 +34,6 @@ const selectRole = () => {
     "select user.userId,role.roleId,role.roleName,role.active,role.remark,role.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_role as role ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId ORDER BY role.roleName"
   );
 };
-
-const checkDuplicateRole=(roleName)=>{
-  query=util.promisify(mypool.query).bind(mypool);
-  return query(
-    `Select Count(*) as DR from tbl_role where roleName=trim('${roleName}')`
-  )
-}
 
 const insertRole = (roleName, remark, active, userId, createdDate) => {
   query = util.promisify(mypool.query).bind(mypool);
@@ -168,11 +161,41 @@ const editEmployee = (
   address,
   userId,
   createdDate,
-  active,
+  active
 ) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
     `UPDATE restaurant.tbl_employee SET employeeImage = '${employeeImage}', employeeName = '${employeeName}', fatherName = '${fatherName}', dateOfBirth = '${dateOfBirth}', nrcNo = '${nrc}', joinDate = '${joinDate}', departmentId = ${departmentId}, designationId = ${designationId}, education = '${education}', gender = '${gender}', maritalStatus = '${maritalStatus}', address = '${address}', createdBy = '${userId}', createdDate = '${createdDate}', active = ${active} WHERE employeeId=${employeeId}`
+  );
+};
+
+const checkDuplicateRole = (roleName, roleId) => {
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `Select Count(*) as DR from tbl_role where roleName=trim('${roleName}') and roleId<>'${roleId}'`
+  );
+};
+
+const checkDuplicateDepartment = (department, departmentId) => {
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `Select Count(*) as DR from tbl_department where department=trim('${department}') and departmentId<>'${departmentId}'`
+  );
+};
+
+const checkDuplicateDesignation = (designation, designationId) => {
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `Select Count(*) as DR from tbl_designation where designation=trim('${designation}') and designationId<>'${designationId}'`
+  );
+};
+
+const checkDuplicateEmployee = (employee,nrc,employeeId) => {
+  console.log(employeeId,nrc,employee);
+  
+  query = util.promisify(mypool.query).bind(mypool);
+  return query(
+    `Select Count(*) as DR from tbl_employee where employeeName=trim('${employee}') and employeeId<>'${employeeId}';Select Count(*) as DRNRC from tbl_employee where nrcNo=trim('${nrc}') and employeeId<>'${employeeId}'`
   );
 };
 
@@ -191,5 +214,8 @@ module.exports = {
   selectEmployee,
   insertEmployee,
   editEmployee,
-  checkDuplicateRole
+  checkDuplicateRole,
+  checkDuplicateDepartment,
+  checkDuplicateDesignation,
+  checkDuplicateEmployee
 };
