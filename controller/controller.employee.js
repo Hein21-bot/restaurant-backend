@@ -14,7 +14,13 @@ const selectEmployee = (req, res) => {
           })
         );
       }
-      res.json(response({ success: true, payload: data }));
+      const EmpData = data[0];
+      const DepData = data[1];
+      const DesData = data[2];
+      const CompoundData = [EmpData, DepData, DesData];
+      console.log(CompoundData);
+      
+      res.json(response({ success: true, payload: CompoundData }));
     })
     .catch(err => {
       res.json(response({ success: false, message: err }));
