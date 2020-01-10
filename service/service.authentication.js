@@ -10,7 +10,7 @@ const login = (username, password) => {
         const data={token:token,userName:res[0].userName}
         return data
     }
-    else{return[]}    
+    else{return[]}
 })
 
 }

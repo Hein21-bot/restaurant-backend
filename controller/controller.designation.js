@@ -2,8 +2,7 @@ const response = require("../model/response");
 const { designationService } = require("../service");
 
 const selectDesignation = (req, res) => {
-  designationService
-    .selectDesignation()
+  designationService.selectDesignation()
     .then(data => {
       if (data.length === 0) {
         res.json(
@@ -26,12 +25,11 @@ const insertDesignation = (req, res) => {
   console.log(req.body);
   const designation = req.body.designation;
   const remark = req.body.remark;
-  const active = req.body.active;
+  const active =  req.body.active === "true" ? 1 : 0;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
 
-  designationService
-    .checkDuplicateDesignation(designation)
+  designationService.checkDuplicateDesignation(designation)
     .then(data => {
       const DuplicateRows = data[0].DR;
       if (DuplicateRows > 0) {
@@ -43,8 +41,7 @@ const insertDesignation = (req, res) => {
           })
         );
       } else {
-        designationService
-          .insertDesignation(designation, active, remark, userId, createdDate)
+        designationService.insertDesignation(designation, active, remark, userId, createdDate)
           .then(data => {
             console.log(data);
 
@@ -79,8 +76,7 @@ const editDesignation = (req, res) => {
   const active = req.body.active;
   const userId = req.body.userId;
   const designationId = req.body.designationId;
-  designationService
-    .checkDuplicateDesignation(designation, designationId)
+  designationService.checkDuplicateDesignation(designation, designationId)
     .then(data => {
       const DuplicateRows = data[0].DR;
       if (DuplicateRows > 0) {
@@ -92,8 +88,7 @@ const editDesignation = (req, res) => {
           })
         );
       } else {
-        designationService
-          .editDesignation(designation, active, remark, userId, designationId)
+        designationService.editDesignation(designation, active, remark, userId, designationId)
           .then(data => {
             console.log(data);
 

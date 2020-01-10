@@ -3,7 +3,7 @@ const { departmentService } = require("../service");
 
 const selectDepartment = (req, res) => {
   departmentService
-    .selectDepartment()
+  .selectDepartment()
     .then(data => {
       if (data.length === 0) {
         res.json(
@@ -26,11 +26,11 @@ const insertDepartment = (req, res) => {
   console.log(req.body);
   const department = req.body.department;
   const remark = req.body.remark;
-  const active = req.body.active;
+  const active = req.body.active === "true" ? 1 : 0;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
   departmentService
-    .checkDuplicateDepartment(department)
+  .checkDuplicateDepartment(department)
     .then(data => {
       const DuplicateRows = data[0].DR;
       if (DuplicateRows > 0) {
@@ -43,7 +43,7 @@ const insertDepartment = (req, res) => {
         );
       } else {
         departmentService
-          .insertDepartment(department, active, remark, userId, createdDate)
+        .insertDepartment(department, active, remark, userId, createdDate)
           .then(data => {
             console.log(data);
 
@@ -64,6 +64,7 @@ const insertDepartment = (req, res) => {
     })
     .catch(err => {
       res.json(response({ success: false, message: err }));
+      console.log("dp insert error")
     });
 };
 
@@ -75,7 +76,7 @@ const editDepartment = (req, res) => {
   const userId = req.body.userId;
   const departmentId = req.body.departmentId;
   departmentService
-    .checkDuplicateDepartment(department, departmentId)
+  .checkDuplicateDepartment(department, departmentId)
     .then(data => {
       const DuplicateRows = data[0].DR;
       if (DuplicateRows > 0) {
@@ -88,7 +89,7 @@ const editDepartment = (req, res) => {
         );
       } else {
         departmentService
-          .editDepartment(department, active, remark, userId, departmentId)
+        .editDepartment(department, active, remark, userId, departmentId)
           .then(data => {
             console.log(data);
 

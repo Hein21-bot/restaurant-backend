@@ -2,9 +2,7 @@ const response = require("../model/response");
 const { adminService } = require("../service");
 
 const selectRole = (req, res) => {
-  adminService
-    .selectRole()
-    .then(data => {
+  adminService.selectRole().then(data => {
       console.log(data);
 
       if (data.length === 0) {
@@ -28,11 +26,10 @@ const insertRole = (req, res) => {
   console.log(req.body);
   const roleName = req.body.roleName;
   const remark = req.body.remark;
-  const active = req.body.active;
+  const active = req.body.active === "true" ? 1 : 0;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
-  adminService
-    .checkDuplicateRole(roleName)
+  adminService.checkDuplicateRole(roleName)
     .then(data => {
       console.log("DuPlicate=======>>", data);
       const DuplicateRows = data[0].DR;
@@ -45,8 +42,7 @@ const insertRole = (req, res) => {
           })
         );
       } else {
-        adminService
-          .insertRole(roleName, remark, active, userId, createdDate)
+        adminService.insertRole(roleName, remark, active, userId, createdDate)
           .then(data => {
             console.log(data);
 
@@ -70,10 +66,9 @@ const editRole = (req, res) => {
   const roleId = req.body.roleId;
   const roleName = req.body.roleName;
   const remark = req.body.remark;
-  const active = req.body.active;
+  const active = req.body.active === "true" ? 1 : 0;
   const userId = req.body.userId;
-  adminService
-    .checkDuplicateRole(roleName, roleId)
+  adminService.checkDuplicateRole(roleName, roleId)
     .then(data => {
       const DuplicateRows = data[0].DR;
       if (DuplicateRows > 0) {
@@ -85,10 +80,10 @@ const editRole = (req, res) => {
           })
         );
       } else {
-        adminService
-          .editRole(roleId, roleName, remark, active, userId)
+        adminService.editRole(roleId, roleName, remark, active, userId)
           .then(data => {
             console.log(data);
+            console.log(roleId)
 
             if (data.length === 0) {
               res.json(

@@ -2,8 +2,7 @@ const response = require("../model/response");
 const { employeeService } = require("../service");
 const { upload } = require("../middleware");
 const selectEmployee = (req, res) => {
-  employeeService
-    .selectEmployee()
+  employeeService.selectEmployee()
     .then(data => {
       if (data.length === 0) {
         res.json(
@@ -33,9 +32,7 @@ const insertEmployee = (req, res) => {
     console.log("Request file ====>", req.file);
 
     const employeeName = req.body.employeeName;
-    const employeeImage = `${
-      req.file ? req.file.filename : req.body.employeeImage
-    }`;
+    const employeeImage = req.file ? req.file.filename : "";
     const fatherName = req.body.fatherName;
     const dateOfBirth = req.body.dateOfBirth;
     const nrc = req.body.NRC;
@@ -48,11 +45,10 @@ const insertEmployee = (req, res) => {
     const address = req.body.address;
     const userId = req.body.userId;
     const createdDate = req.body.createdDate;
-    const active = req.body.active;
-
+    const active = req.body.active === "true" ? 1 : 0;
+    const employeeId=req.body.employeeId;
     console.log(req.body);
-    employeeService
-      .checkDuplicateEmployee(employeeName, nrc, employeeId)
+    employeeService.checkDuplicateEmployee(employeeName, nrc, employeeId)
       .then(data => {
         const DuplicateRows = data[0][0].DR;
         const DuplicateNRCRows = data[1][0].DRNRC;
@@ -77,24 +73,7 @@ const insertEmployee = (req, res) => {
           );
           return;
         } else {
-          employeeService
-            .insertEmployee(
-              employeeName,
-              employeeImage,
-              fatherName,
-              dateOfBirth,
-              nrc,
-              joinDate,
-              departmentId,
-              designationId,
-              education,
-              gender,
-              maritalStatus,
-              address,
-              userId,
-              createdDate,
-              active
-            )
+          employeeService.insertEmployee( employeeName,employeeImage,fatherName,dateOfBirth, nrc, joinDate,departmentId,designationId,education,gender, maritalStatus,address,userId,createdDate,active)
             .then(data => {
               console.log(data);
               if (data.length === 0) {
@@ -121,12 +100,11 @@ const insertEmployee = (req, res) => {
 const editEmployee = (req, res) => {
   upload(req, res, err => {
     console.log("err ->", err);
-    console.log("Request file ====>", req.file);
+    console.log("Request file ====>", req.body);
+
     const employeeId = req.body.employeeId;
     const employeeName = req.body.employeeName;
-    const employeeImage = `${
-      req.file ? req.file.filename : req.body.employeeImage
-    }`;
+    const employeeImage = req.file ? req.file.filename : "";
     const fatherName = req.body.fatherName;
     const dateOfBirth = req.body.dateOfBirth;
     const nrc = req.body.NRC;
@@ -142,12 +120,14 @@ const editEmployee = (req, res) => {
     const active = req.body.active;
 
     console.log(req.body);
-    employeeService
-      .checkDuplicateEmployee(employeeName, nrc, employeeId)
+    console.log(employeeId);
+   
+     employeeService.checkDuplicateEmployee(employeeName, nrc, employeeId)
       .then(data => {
+        
         const DuplicateRows = data[0][0].DR;
         const DuplicateNRCRows = data[1][0].DRNRC;
-        console.log(data);
+        
 
         if (DuplicateRows > 0) {
           res.json(
@@ -170,27 +150,10 @@ const editEmployee = (req, res) => {
           );
           return;
         } else {
-          employeeService
-            .editEmployee(
-              employeeId,
-              employeeName,
-              employeeImage,
-              fatherName,
-              dateOfBirth,
-              nrc,
-              joinDate,
-              departmentId,
-              designationId,
-              education,
-              gender,
-              maritalStatus,
-              address,
-              userId,
-              createdDate,
-              active
-            )
+          employeeService.editEmployee( employeeId, employeeName,employeeImage,fatherName,dateOfBirth, nrc, joinDate,departmentId,designationId,education,gender, maritalStatus,address,userId,createdDate,active)
             .then(data => {
               console.log(data);
+              
 
               if (data.length === 0) {
                 res.json(
@@ -205,7 +168,10 @@ const editEmployee = (req, res) => {
         }
       })
       .catch(err => {
-        res.json(response({ success: false, message: err }));
+        res.json(response({ success: false, message: "Error",error:err }));
+        console.log(err)
+        
+        
       });
   });
 };

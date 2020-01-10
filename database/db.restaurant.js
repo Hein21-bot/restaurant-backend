@@ -31,47 +31,71 @@ const navInfo = () => {
 const selectRole = () => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    "select user.userId,role.roleId,role.roleName,role.active,role.remark,role.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_role as role ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId ORDER BY role.roleName"
+    "select user.userId,role.roleId,role.roleName,role.active,role.remark,role.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_role as role ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId"
   );
 };
 
+// const insertRole = (roleName, remark, active, userId, createdDate) => {
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `INSERT INTO tbl_role (roleName, active, remark, createBy, createdDate) VALUES (trim('${roleName}'), ${
+//       active ? 1 : 0
+//     }, trim('${remark}'), '${userId}', '${createdDate}')`
+//   );
+// };
 const insertRole = (roleName, remark, active, userId, createdDate) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `INSERT INTO tbl_role (roleName, active, remark, createBy, createdDate) VALUES (trim("${roleName}"), ${
-      active ? 1 : 0
-    }, trim("${remark}"), '${userId}', '${createdDate}')`
+      `INSERT INTO tbl_role (roleName,remark,active,createBy,createdDate) VALUES (?,?,?,?,?)`,
+      [roleName, remark, active, userId, createdDate],
   );
 };
+
 const editRole = (roleId, roleName, remark, active, userId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `UPDATE tbl_role SET roleName = trim('${roleName}'),remark=trim("${remark}"),createBy=${userId},active=${
+    `UPDATE tbl_role SET roleName = trim("${roleName}"),remark=trim("${remark}"),createBy=${userId},active=${
       active === true ? 1 : 0
     } WHERE roleId=${roleId}`
   );
 };
 
+// const editRole = (roleId, roleName, remark, active, userId) => {
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `UPDATE tbl_role SET roleName = ?,remark=?,createBy=?,active=? WHERE roleId=?`,
+//     [roleId,roleName,remark,active,userId]
+//   );
+// };
+
 const selectDepartment = () => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    "select user.userId,department.departmentId,department.department,department.active,department.remark,department.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_department as department ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId ORDER BY department.department"
+    "select user.userId,department.departmentId,department.department,department.active,department.remark,department.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_department as department ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId"
   );
 };
+
+// const insertDepartment = (department, active, remark, userId, createdDate) => {
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `INSERT INTO tbl_department( department, active, remark, createBy, createdDate) VALUES (("${department}"), ${
+//       active ? 1 : 0
+//     }, ("${remark}"),${userId}, '${createdDate}')`
+//   );
+// };
 
 const insertDepartment = (department, active, remark, userId, createdDate) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `INSERT INTO tbl_department( department, active, remark, createBy, createdDate) VALUES (trim('${department}'), ${
-      active ? 1 : 0
-    }, trim("${remark}"),${userId}, '${createdDate}')`
+      `INSERT INTO tbl_department (department,active,remark,createBy,createdDate) VALUES (?,?,?,?,?)`,
+      [department, active, remark, userId, createdDate],
   );
 };
 
 const editDepartment = (department, active, remark, userId, departmentId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `UPDATE tbl_department SET department = trim('${department}'),remark=trim("${remark}"),createBy=${userId},active=${
+    `UPDATE tbl_department SET department = ("${department}"),remark=("${remark}"),createBy=${userId},active=${
       active === true ? 1 : 0
     } WHERE departmentId=${departmentId}`
   );
@@ -80,35 +104,31 @@ const editDepartment = (department, active, remark, userId, departmentId) => {
 const selectDesignation = () => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    "select user.userId,designation.designationId,designation.designation,designation.active,designation.remark,designation.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_designation as designation ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId ORDER BY designation.designation"
+    "select user.userId,designation.designationId,designation.designation,designation.active,designation.remark,designation.createdDate,employee.employeeName from tbl_user as user INNER JOIN  tbl_designation as designation ON user.userID inner Join tbl_employee as employee ON user.employeeId=employee.employeeId"
   );
 };
 
-const insertDesignation = (
-  designation,
-  active,
-  remark,
-  userId,
-  createdDate
-) => {
+// const insertDesignation = (designation,active,remark,userId,createdDate) => {
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `INSERT INTO tbl_designation (designation, active, remark, createBy, createdDate) VALUES (trim('${designation}'), ${
+//       active ? 1 : 0
+//     }, trim("${remark}"), ${userId}, '${createdDate}')`
+//   );
+// };
+
+const insertDesignation = (designation,active,remark,userId,createdDate) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `INSERT INTO tbl_designation (designation, active, remark, createBy, createdDate) VALUES (trim('${designation}'), ${
-      active ? 1 : 0
-    }, trim("${remark}"), ${userId}, '${createdDate}')`
+      `INSERT INTO tbl_designation (designation,active,remark,createBy,createdDate) VALUES (?,?,?,?,?)`,
+      [designation, active, remark, userId, createdDate],
   );
 };
 
-const editDesignation = (
-  designation,
-  active,
-  remark,
-  userId,
-  designationId
-) => {
+const editDesignation = (designation,active,remark,userId,designationId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `UPDATE tbl_designation SET designation = trim('${designation}'),remark=trim("${remark}"),createBy=${userId},active=${
+    `UPDATE tbl_designation SET designation = ("${designation}"),remark=("${remark}"),createBy=${userId},active=${
       active === true ? 1 : 0
     } WHERE designationId='${designationId}'`
   );
@@ -121,83 +141,90 @@ const selectEmployee = () => {
   );
 };
 
-const insertEmployee = (
-  employeeName,
-  employeeImage,
-  fatherName,
-  dateOfBirth,
-  nrc,
-  joinDate,
-  departmentId,
-  designationId,
-  education,
-  gender,
-  maritalStatus,
-  address,
-  userId,
-  createdDate,
-  active
-) => {
-  console.log(createdDate);
+// const insertEmployee = (employeeName,employeeImage,fatherName,dateOfBirth,nrc,joinDate,departmentId,designationId,education,gender,maritalStatus,address,userId,createdDate,active) => {
+//   console.log(createdDate);
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `INSERT INTO restaurant.tbl_employee (employeeImage, employeeName, fatherName, dateOfBirth, nrcNo, joinDate, departmentId, designationId, education, gender, maritalStatus, address, createdBy, createdDate, active) VALUES ('${employeeImage}', '${employeeName}', '${fatherName}', '${dateOfBirth}', '${nrc}', '${joinDate}', ${departmentId}, ${designationId},'${education}', '${gender}', '${maritalStatus}', '${address}', '${userId}', '${createdDate}', ${active})`
+//   );
+// };
+
+const insertEmployee = (employeeName,employeeImage,fatherName,dateOfBirth,nrc,joinDate,departmentId,designationId,education,gender,maritalStatus,address,userId,createdDate,active) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `INSERT INTO restaurant.tbl_employee (employeeImage, employeeName, fatherName, dateOfBirth, nrcNo, joinDate, departmentId, designationId, education, gender, maritalStatus, address, createdBy, createdDate, active) VALUES ('${employeeImage}', '${employeeName}', '${fatherName}', '${dateOfBirth}', '${nrc}', '${joinDate}', ${departmentId}, ${designationId},'${education}', '${gender}', '${maritalStatus}', '${address}', '${userId}', '${createdDate}', ${active})`
+      `INSERT INTO tbl_employee (employeeImage, employeeName, fatherName, dateOfBirth, nrcNo, joinDate, departmentId, designationId, education, gender, maritalStatus, address, createdBy, createdDate, active) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [employeeImage,employeeName,fatherName,dateOfBirth,nrc,joinDate,departmentId,designationId,education,gender,maritalStatus,address,userId,createdDate,active],
   );
 };
 
-const editEmployee = (
-  employeeId,
-  employeeName,
-  employeeImage,
-  fatherName,
-  dateOfBirth,
-  nrc,
-  joinDate,
-  departmentId,
-  designationId,
-  education,
-  gender,
-  maritalStatus,
-  address,
-  userId,
-  createdDate,
-  active
-) => {
+const editEmployee = (employeeId,employeeName,employeeImage,fatherName,dateOfBirth,nrc,joinDate,departmentId,designationId,education,gender,  maritalStatus,address,userId,createdDate,active) => {
+  console.log("",employeeId);
+  
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `UPDATE restaurant.tbl_employee SET employeeImage = '${employeeImage}', employeeName = '${employeeName}', fatherName = '${fatherName}', dateOfBirth = '${dateOfBirth}', nrcNo = '${nrc}', joinDate = '${joinDate}', departmentId = ${departmentId}, designationId = ${designationId}, education = '${education}', gender = '${gender}', maritalStatus = '${maritalStatus}', address = '${address}', createdBy = '${userId}', createdDate = '${createdDate}', active = ${active} WHERE employeeId=${employeeId}`
+    `UPDATE restaurant.tbl_employee SET employeeName = "${employeeName}", employeeImage = "${employeeImage}", fatherName = "${fatherName}", dateOfBirth = "${dateOfBirth}", nrcNo = "${nrc}", joinDate = "${joinDate}", departmentId = ${departmentId}, designationId = ${designationId}, education = "${education}", gender = "${gender}", maritalStatus = "${maritalStatus}", address = "${address}", createdBy = ${userId}, createdDate = "${createdDate}", active = ${active} WHERE employeeId=${employeeId}`
   );
 };
+
+// const checkDuplicateRole = (roleName, roleId) => {
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `Select Count(*) as DR from tbl_role where roleName=trim('${roleName}') and roleId<>'${roleId}'`
+//   );
+// };
 
 const checkDuplicateRole = (roleName, roleId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `Select Count(*) as DR from tbl_role where roleName=trim('${roleName}') and roleId<>'${roleId}'`
+    'Select Count(*) as DR from tbl_role where roleName= "'+roleName +'" and roleId != "'+ roleId +'"'
   );
 };
+
+// const checkDuplicateDepartment = (department, departmentId) => {
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `Select Count(*) as DR from tbl_department where department=trim('${department}') and departmentId<>'${departmentId}'`
+//   );
+// };
+
 
 const checkDuplicateDepartment = (department, departmentId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `Select Count(*) as DR from tbl_department where department=trim('${department}') and departmentId<>'${departmentId}'`
-  );
-};
+    'Select Count(*) as DR from tbl_department where department= "'+department +'" and departmentId != "'+ departmentId +'"'
+  )
+}
+
+// const checkDuplicateDesignation = (designation, designationId) => {
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `Select Count(*) as DR from tbl_designation where designation=trim('${designation}') and designationId<>'${designationId}'`
+//   );
+// };
 
 const checkDuplicateDesignation = (designation, designationId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `Select Count(*) as DR from tbl_designation where designation=trim('${designation}') and designationId<>'${designationId}'`
-  );
-};
+    'Select Count(*) as DR from tbl_designation where designation= "'+designation +'" and designationId != "'+ designationId +'"'
+  )
+}
 
-const checkDuplicateEmployee = (employee,nrc,employeeId) => {
-  console.log(employeeId,nrc,employee);
-  
+
+const checkDuplicateEmployee = (employeeName, nrc,employeeId) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    `Select Count(*) as DR from tbl_employee where employeeName=trim('${employee}') and employeeId<>'${employeeId}';Select Count(*) as DRNRC from tbl_employee where nrcNo=trim('${nrc}') and employeeId<>'${employeeId}'`
-  );
-};
+    'Select Count(*) as DR from tbl_employee where employeeName= "'+employeeName +'" and employeeId != "'+ employeeId +'" ; Select Count(*) as DRNRC from tbl_employee where nrcNo= "'+ nrc +'" and employeeId != "'+ employeeId +'"'
+  )
+}
+
+// const checkDuplicateEmployee = (employee,nrc,employeeId) => {
+//   console.log(employeeId,nrc,employee);
+  
+//   query = util.promisify(mypool.query).bind(mypool);
+//   return query(
+//     `Select Count(*) as DR from tbl_employee where employeeName=trim('${employee}') and employeeId<>'${employeeId}';    Select Count(*) as DRNRC from tbl_employee where nrcNo=trim('${nrc}') and employeeId<>'${employeeId}'`
+//   );
+// };
 
 module.exports = {
   login,
