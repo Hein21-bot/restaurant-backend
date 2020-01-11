@@ -66,7 +66,7 @@ const editRole = (req, res) => {
   const roleId = req.body.roleId;
   const roleName = req.body.roleName;
   const remark = req.body.remark;
-  const active = req.body.active === "true" ? 1 : 0;
+  const active = req.body.active;
   const userId = req.body.userId;
   adminService.checkDuplicateRole(roleName, roleId)
     .then(data => {
