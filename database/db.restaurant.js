@@ -47,7 +47,7 @@ const insertRole = (roleName, remark, active, userId, createdDate) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
       `INSERT INTO tbl_role (roleName,remark,active,createBy,createdDate) VALUES (?,?,?,?,?)`,
-      [roleName, remark, active, userId, createdDate],
+      [roleName, remark, `${active === true ? 1 : 0}`, userId, createdDate],
   );
 };
 
@@ -121,7 +121,7 @@ const insertDesignation = (designation,active,remark,userId,createdDate) => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
       `INSERT INTO tbl_designation (designation,active,remark,createBy,createdDate) VALUES (?,?,?,?,?)`,
-      [designation, active, remark, userId, createdDate],
+      [designation, `${active === true ? 1 : 0}`, remark, userId, createdDate],
   );
 };
 

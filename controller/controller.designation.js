@@ -25,7 +25,7 @@ const insertDesignation = (req, res) => {
   console.log(req.body);
   const designation = req.body.designation;
   const remark = req.body.remark;
-  const active =  req.body.active === "true" ? 1 : 0;
+  const active =  req.body.active ;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
 
@@ -66,6 +66,7 @@ const insertDesignation = (req, res) => {
     })
     .catch(err => {
       res.json(response({ success: false, message: err }));
+      console.log("insert des error")
     });
 };
 

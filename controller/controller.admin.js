@@ -26,7 +26,7 @@ const insertRole = (req, res) => {
   console.log(req.body);
   const roleName = req.body.roleName;
   const remark = req.body.remark;
-  const active = req.body.active === "true" ? 1 : 0;
+  const active = req.body.active;
   const userId = req.body.userId;
   const createdDate = req.body.createdDate;
   adminService.checkDuplicateRole(roleName)
