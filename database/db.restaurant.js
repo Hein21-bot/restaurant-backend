@@ -137,7 +137,7 @@ const editDesignation = (designation,active,remark,userId,designationId) => {
 const selectEmployee = () => {
   query = util.promisify(mypool.query).bind(mypool);
   return query(
-    "select user.userId,department.departmentId,designation.designationId,employee.employeeId,employee.employeeImage,employee.employeeName,employee.fatherName,employee.dateOfBirth,employee.nrcNo,employee.joinDate,employee.education,employee.gender,employee.maritalStatus,employee.address,employee.createdBy,employee.createdDate,employee.active,department.department,designation.designation,user.userName as createdBy from tbl_employee as employee INNER JOIN tbl_department as department ON employee.departmentId=department.departmentId INNER JOIN tbl_designation as designation on employee.designationId=designation.designationId INNER JOIN tbl_user as user on employee.createdBy=user.userId;Select departmentId as value,department as label from tbl_department;Select designationId as value,designation as label from tbl_designation"
+    "select user.userId,department.departmentId,designation.designationId,employee.employeeId,employee.employeeImage,employee.employeeName,employee.fatherName,employee.dateOfBirth,employee.nrcNo,employee.joinDate,employee.education,employee.gender,employee.maritalStatus,employee.address,employee.createdBy,employee.createdDate,employee.active,department.department,designation.designation,user.userName as createdBy from tbl_employee as employee INNER JOIN tbl_department as department ON employee.departmentId=department.departmentId INNER JOIN tbl_designation as designation on employee.designationId=designation.designationId INNER JOIN tbl_user as user on employee.createdBy=user.userId;Select departmentId as value,department as label from tbl_department where active = 1 ORDER BY department;Select designationId as value,designation as label from tbl_designation where active = 1 ORDER BY designation "
   );
 };
 
@@ -226,6 +226,8 @@ const checkDuplicateEmployee = (employeeName, nrc,employeeId) => {
 //   );
 // };
 
+
+
 module.exports = {
   login,
   navInfo,
@@ -245,4 +247,5 @@ module.exports = {
   checkDuplicateDepartment,
   checkDuplicateDesignation,
   checkDuplicateEmployee
+  
 };

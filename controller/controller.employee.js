@@ -1,6 +1,7 @@
 const response = require("../model/response");
 const { employeeService } = require("../service");
 const { upload } = require("../middleware");
+
 const selectEmployee = (req, res) => {
   employeeService.selectEmployee()
     .then(data => {
@@ -18,11 +19,12 @@ const selectEmployee = (req, res) => {
       const DesData = data[2];
       const CompoundData = [EmpData, DepData, DesData];
       console.log(CompoundData);
-      
+
       res.json(response({ success: true, payload: CompoundData }));
     })
     .catch(err => {
       res.json(response({ success: false, message: err }));
+      console.log("Select Emp Err")
     });
 };
 
@@ -46,7 +48,7 @@ const insertEmployee = (req, res) => {
     const userId = req.body.userId;
     const createdDate = req.body.createdDate;
     const active = req.body.active === "true" ? 1 : 0;
-    const employeeId=req.body.employeeId;
+    const employeeId = req.body.employeeId;
     console.log(req.body);
     employeeService.checkDuplicateEmployee(employeeName, nrc, employeeId)
       .then(data => {
@@ -73,7 +75,7 @@ const insertEmployee = (req, res) => {
           );
           return;
         } else {
-          employeeService.insertEmployee( employeeName,employeeImage,fatherName,dateOfBirth, nrc, joinDate,departmentId,designationId,education,gender, maritalStatus,address,userId,createdDate,active)
+          employeeService.insertEmployee(employeeName, employeeImage, fatherName, dateOfBirth, nrc, joinDate, departmentId, designationId, education, gender, maritalStatus, address, userId, createdDate, active)
             .then(data => {
               console.log(data);
               if (data.length === 0) {
@@ -121,13 +123,13 @@ const editEmployee = (req, res) => {
 
     console.log(req.body);
     console.log(employeeId);
-   
-     employeeService.checkDuplicateEmployee(employeeName, nrc, employeeId)
+
+    employeeService.checkDuplicateEmployee(employeeName, nrc, employeeId)
       .then(data => {
-        
+
         const DuplicateRows = data[0][0].DR;
         const DuplicateNRCRows = data[1][0].DRNRC;
-        
+
 
         if (DuplicateRows > 0) {
           res.json(
@@ -150,10 +152,10 @@ const editEmployee = (req, res) => {
           );
           return;
         } else {
-          employeeService.editEmployee( employeeId, employeeName,employeeImage,fatherName,dateOfBirth, nrc, joinDate,departmentId,designationId,education,gender, maritalStatus,address,userId,createdDate,active)
+          employeeService.editEmployee(employeeId, employeeName, employeeImage, fatherName, dateOfBirth, nrc, joinDate, departmentId, designationId, education, gender, maritalStatus, address, userId, createdDate, active)
             .then(data => {
               console.log(data);
-              
+
 
               if (data.length === 0) {
                 res.json(
@@ -168,10 +170,10 @@ const editEmployee = (req, res) => {
         }
       })
       .catch(err => {
-        res.json(response({ success: false, message: "Error",error:err }));
+        res.json(response({ success: false, message: "Error", error: err }));
         console.log(err)
-        
-        
+
+
       });
   });
 };
