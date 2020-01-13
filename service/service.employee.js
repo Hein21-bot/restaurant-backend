@@ -16,4 +16,4 @@ const checkDuplicateEmployee=(employee, nrc,employeeId)=>{
     return restaurantDB.checkDuplicateEmployee(employee, nrc, employeeId)
 }
 
-module.exports={selectEmployee,insertEmployee,editEmployee,checkDuplicateEmployee,}
+module.exports={selectEmployee,insertEmployee,editEmployee,checkDuplicateEmployee}
